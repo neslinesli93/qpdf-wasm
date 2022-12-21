@@ -1,7 +1,7 @@
 const assert = require("assert");
 const path = require("path");
 const fs = require("fs/promises");
-const Module = require("../dist/qpdf");
+const Module = require("../");
 
 before(async function () {
   await fs.mkdir(path.join(__dirname, "out"), { recursive: true });

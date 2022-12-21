@@ -4,7 +4,7 @@ on:
   push: {}
 
 jobs:
-  build-with-docker:
+  ci:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -33,7 +33,7 @@ jobs:
       - name: Copy artifacts
         run: cp -r ${{ steps.extract.outputs.destination }} ./dist
 
-      - name: Frontend
+      - name: Tests
         uses: actions/setup-node@v3
         with:
           node-version: 18

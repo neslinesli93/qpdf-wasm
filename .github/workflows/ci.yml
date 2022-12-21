@@ -47,7 +47,7 @@ jobs:
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref_type == 'tag' }}
         with:
           name: node-app
           path: ./dist

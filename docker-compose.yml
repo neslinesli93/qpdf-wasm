@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    command: bash -c 'yarn && yarn test'
+    volumes:
+      - "$PWD:/src"
+    ports:
+      - 5173:5173

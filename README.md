@@ -1,4 +1,4 @@
-# @neslinesli93/qpdf-wasm
+# @neslinesli93/qpdf-wasm &middot; [![NPM Version](https://img.shields.io/npm/v/@neslinesli93/qpdf-wasm)](https://www.npmjs.com/package/@neslinesli93/qpdf-wasm)
 
 [QPDF](https://github.com/qpdf/qpdf) compiled to WASM, ready for the browser.
 

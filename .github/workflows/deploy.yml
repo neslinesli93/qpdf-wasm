@@ -1,0 +1,33 @@
+name: Deploy
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build-artifact:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: build-artifact
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: node-app
+          path: ./dist
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Publish to NPM registry
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

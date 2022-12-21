@@ -69,6 +69,3 @@ emcc \
   -lworkerfs.js \
   -lz \
   -ljpeg
-
-cp "$ROOT/js/qpdf.d.ts" "$ROOT/dist"
-cp "$ROOT/package.json" "$ROOT/dist"

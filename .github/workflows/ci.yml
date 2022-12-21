@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  push: {}
+  push:
 
 jobs:
   ci:
@@ -28,7 +28,7 @@ jobs:
         id: extract
         with:
           image: neslinesli93/qpdf-wasm:latest
-          path: /opt/qpdf
+          path: /opt/qpdf/.
 
       - name: Copy artifacts
         run: cp -r ${{ steps.extract.outputs.destination }} ./dist
@@ -40,3 +40,10 @@ jobs:
       - run: |
           yarn
           yarn test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          name: node-app
+          path: ./dist

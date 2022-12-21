@@ -1,6 +1,6 @@
 {
   "name": "@neslinesli93/qpdf-wasm",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "QPDF compiled to WASM",
   "main": "dist/qpdf.js",
   "types": "dist/qpdf.d.ts",

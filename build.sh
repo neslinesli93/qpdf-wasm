@@ -9,7 +9,7 @@ fn_git_clean() {
 OUT_DIR="$PWD/out"
 ROOT="$PWD"
 EMCC_FLAGS_DEBUG="-Os -g3"
-EMCC_FLAGS_RELEASE="-Oz -flto"
+EMCC_FLAGS_RELEASE="-Oz -flto -fvisibility=hidden"
 
 export CPPFLAGS="-I$OUT_DIR/include"
 export LDFLAGS="-L$OUT_DIR/lib"
@@ -47,6 +47,7 @@ emcmake cmake -S . -B build \
 cmake --build build -j 4
 
 mkdir -p "$ROOT/dist"
+
 emcc \
   $LDFLAGS \
   $CPPFLAGS \

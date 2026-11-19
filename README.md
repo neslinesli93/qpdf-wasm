@@ -86,6 +86,37 @@ const outputFileUrl = URL.createObjectURL(new Blob([outputFile]));
 
 ```
 
+## qpdf's messages
+
+qpdf writes its output to standard output and its warnings and errors (for example "file is damaged") to standard error. By default they go to `console.log` and `console.error`. Pass `print` and `printErr` to receive them line by line:
+
+```js
+const warnings = [];
+const qpdf = await createModule({
+    locateFile: () => wasmUrl,
+    printErr: (line) => warnings.push(line),
+});
+```
+
+## Calling qpdf many times in one instance
+
+Each `callMain` copies its arguments onto the WebAssembly stack (64 KB) and leaves them there, so one instance runs out of stack after a few hundred calls, or fewer with long argument lists. Save the stack pointer before each call and restore it afterwards:
+
+```js
+const stack = qpdf.stackSave();
+try {
+    qpdf.callMain(["/input.pdf", "--pages", ".", "1-2", "--", "/output.pdf"]);
+} finally {
+    qpdf.stackRestore(stack);
+}
+```
+
+`callMain` also adds the program's name to the front of the array it's given, so pass a new array to each call.
+
+## Browser support
+
+qpdf is compiled with WebAssembly exception handling, which it needs to recover damaged files. It runs in Chrome and Edge 95, Firefox 100, Safari 15.2, Node.js 17 and later versions.
+
 ## Local development
 
 Build local image and launch tests with:

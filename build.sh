@@ -10,12 +10,18 @@ OUT_DIR="$PWD/out"
 ROOT="$PWD"
 EMCC_FLAGS_DEBUG="-Os -g3"
 EMCC_FLAGS_RELEASE="-Oz -flto -fvisibility=hidden"
+# C++ exceptions, and setjmp/longjmp, use WebAssembly exception handling. The flag
+# must be on every compile and on the link: without it, libqpdf's catch blocks are
+# compiled out, and with them qpdf's recovery of damaged files. The link keeps the
+# legacy exception instructions (WASM_EXNREF=0, Emscripten's default), which run in
+# Chrome and Edge 95, Firefox 100, Safari 15.2 and Node.js 17, and later versions.
+EMCC_FLAGS_EXCEPTIONS="-fwasm-exceptions"
 
 export CPPFLAGS="-I$OUT_DIR/include"
 export LDFLAGS="-L$OUT_DIR/lib"
 export PKG_CONFIG_PATH="$OUT_DIR/lib/pkgconfig"
 export EM_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
-export CFLAGS="$EMCC_FLAGS_RELEASE"
+export CFLAGS="$EMCC_FLAGS_RELEASE $EMCC_FLAGS_EXCEPTIONS"
 export CXXFLAGS="$CFLAGS"
 
 mkdir -p "$OUT_DIR"
@@ -58,9 +64,9 @@ emcc \
   --post-js "$ROOT/js/post.js" \
   -s WASM_BIGINT=1 \
   -s ALLOW_MEMORY_GROWTH=1 \
-  -s EXPORTED_RUNTIME_METHODS='["callMain","FS","NODEFS","WORKERFS","ENV"]' \
-  -s INCOMING_MODULE_JS_API='["noInitialRun","noFSInit","locateFile","preRun"]' \
-  -s NO_DISABLE_EXCEPTION_CATCHING=1 \
+  -s EXPORTED_RUNTIME_METHODS='["callMain","FS","NODEFS","WORKERFS","ENV","stackSave","stackRestore"]' \
+  -s INCOMING_MODULE_JS_API='["noInitialRun","noFSInit","locateFile","preRun","print","printErr"]' \
+  -s WASM_EXNREF=0 \
   -s MODULARIZE=1 \
   -o "$ROOT/dist/qpdf.js" \
   "$ROOT/lib/qpdf/build/libqpdf/libqpdf.a" \
